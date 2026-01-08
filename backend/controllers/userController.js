@@ -178,3 +178,17 @@ exports.deletePhoto = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// Report User API
+exports.reportUser = async (req, res) => {
+    const { reason } = req.body;
+
+    const user = await User.findById(req.params.userId);
+    user.reports.push({
+        reportedBy: req.user,
+        reason,
+    });
+
+    await user.save();
+    res.json({ message: "User reported successfully" });
+};

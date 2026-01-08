@@ -8,6 +8,7 @@ const {
     rejectInterest,
     uploadProfilePhoto,
     deletePhoto,
+    reportUser,
 } = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware");
 const cloudUpload = require("../middleware/cloudUpload");
@@ -31,5 +32,12 @@ router.delete(
     authMiddleware,
     deletePhoto
 );
+
+router.post(
+    "/report/:userId",
+    authMiddleware,
+    reportUser
+);
+
 
 module.exports = router;

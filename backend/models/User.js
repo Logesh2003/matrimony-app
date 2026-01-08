@@ -20,6 +20,25 @@ const userSchema = new mongoose.Schema({
             public_id: String,
         },
     ],
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user",
+    },
+
+    isBlocked: {
+        type: Boolean,
+        default: false,
+    },
+
+    reports: [
+        {
+            reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            reason: String,
+            date: { type: Date, default: Date.now },
+        },
+    ],
+
     createdAt: { type: Date, default: Date.now },
 });
 
