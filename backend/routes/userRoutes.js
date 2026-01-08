@@ -6,9 +6,11 @@ const {
     sendInterest,
     acceptInterest,
     rejectInterest,
+    uploadProfilePhoto,
+    deletePhoto,
 } = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware");
-
+const cloudUpload = require("../middleware/cloudUpload");
 const router = express.Router();
 
 router.get("/me", authMiddleware, getMe);
@@ -17,5 +19,17 @@ router.get("/search", authMiddleware, searchProfiles);
 router.post("/interest/:id", authMiddleware, sendInterest);
 router.post("/interest/:id/accept", authMiddleware, acceptInterest);
 router.post("/interest/:id/reject", authMiddleware, rejectInterest);
+router.post(
+    "/profile/photo",
+    authMiddleware,
+    cloudUpload.single("photo"),
+    uploadProfilePhoto
+);
+
+router.delete(
+    "/profile/photo/:photoId",
+    authMiddleware,
+    deletePhoto
+);
 
 module.exports = router;

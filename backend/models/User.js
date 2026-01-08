@@ -14,7 +14,12 @@ const userSchema = new mongoose.Schema({
     matches: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     interestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     interestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-
+    photos: [
+        {
+            url: String,
+            public_id: String,
+        },
+    ],
     createdAt: { type: Date, default: Date.now },
 });
 

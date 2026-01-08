@@ -136,3 +136,45 @@ exports.rejectInterest = async (req, res) => {
     }
 };
 
+// UPLOAD PHOTO (CLOUDINARY)
+exports.uploadProfilePhoto = async (req, res) => {
+    try {
+        const user = await User.findById(req.user);
+
+        user.photos.push({
+            url: req.file.path,
+            public_id: req.file.filename,
+        });
+
+        await user.save();
+
+        res.json({
+            message: "Photo uploaded successfully",
+            photos: user.photos,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Delete Photo API
+const cloudinary = require("../config/cloudinary");
+
+exports.deletePhoto = async (req, res) => {
+    try {
+        const { photoId } = req.params;
+        const user = await User.findById(req.user);
+
+        const photo = user.photos.find(p => p._id.toString() === photoId);
+        if (!photo) return res.status(404).json({ message: "Photo not found" });
+
+        await cloudinary.uploader.destroy(photo.public_id);
+
+        user.photos = user.photos.filter(p => p._id.toString() !== photoId);
+        await user.save();
+
+        res.json({ message: "Photo deleted" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
