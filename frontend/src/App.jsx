@@ -3,6 +3,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import EditProfile from "./pages/EditProfile";
+import ProfilePhoto from "./pages/ProfilePhoto";
 
 export default function App() {
   return (
@@ -21,6 +23,24 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/edit-profile"
+        element={
+          <ProtectedRoute>
+            <EditProfile />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/upload-photo"
+        element={
+          <ProtectedRoute>
+            <ProfilePhoto />
           </ProtectedRoute>
         }
       />

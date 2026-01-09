@@ -5,9 +5,20 @@ const jwt = require("jsonwebtoken");
 // REGISTER
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, gender, dob } = req.body;
+        const {
+            name,
+            email,
+            password,
+            gender,
+            dob,
+            religion,
+            caste,
+            location,
+            education,
+            occupation,
+        } = req.body;
 
-        if (!name || !email || !password) {
+        if (!name || !email || !password || !gender || !dob) {
             return res.status(400).json({ message: "All required fields needed" });
         }
 
@@ -25,6 +36,11 @@ exports.register = async (req, res) => {
             password: hashedPassword,
             gender,
             dob,
+            religion,
+            caste,
+            location,
+            education,
+            occupation,
         });
 
         res.status(201).json({
@@ -35,6 +51,7 @@ exports.register = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // LOGIN
 exports.login = async (req, res) => {

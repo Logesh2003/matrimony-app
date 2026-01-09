@@ -13,10 +13,29 @@ exports.getMe = async (req, res) => {
 // UPDATE PROFILE
 exports.updateProfile = async (req, res) => {
     try {
+        const allowedFields = [
+            "name",
+            "gender",
+            "dob",
+            "religion",
+            "caste",
+            "location",
+            "education",
+            "occupation",
+        ];
+
+        const updateData = {};
+
+        allowedFields.forEach((field) => {
+            if (req.body[field] !== undefined) {
+                updateData[field] = req.body[field];
+            }
+        });
+
         const updatedUser = await User.findByIdAndUpdate(
             req.user,
-            req.body,
-            { new: true }
+            { $set: updateData },
+            { new: true, runValidators: true }
         ).select("-password");
 
         res.json({
@@ -27,6 +46,7 @@ exports.updateProfile = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 // SEARCH PROFILES
@@ -141,16 +161,32 @@ exports.uploadProfilePhoto = async (req, res) => {
     try {
         const user = await User.findById(req.user);
 
-        user.photos.push({
-            url: req.file.path,
-            public_id: req.file.filename,
-        });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // 🔴 Delete old photo from Cloudinary (if exists)
+        if (user.photos.length > 0) {
+            const oldPublicId = user.photos[0].public_id;
+
+            if (oldPublicId) {
+                await cloudinary.uploader.destroy(oldPublicId);
+            }
+        }
+
+        // ✅ Replace array completely (DO NOT push)
+        user.photos = [
+            {
+                url: req.file.path,
+                public_id: req.file.filename,
+            },
+        ];
 
         await user.save();
 
         res.json({
-            message: "Photo uploaded successfully",
-            photos: user.photos,
+            message: "Profile photo replaced successfully",
+            photo: user.photos[0],
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

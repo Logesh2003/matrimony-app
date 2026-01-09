@@ -72,9 +72,16 @@ export default function Dashboard() {
                     </p>
 
                     <button
+                        onClick={() => navigate("/edit-profile")}
                         className="mt-4 w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
                     >
                         Edit Profile
+                    </button>
+                    <button
+                        onClick={() => navigate("/upload-photo")}
+                        className="mt-4 w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
+                    >
+                        Upload Photo
                     </button>
                 </div>
 
