@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authSlice";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
+    const { loading, error, token } = useSelector((state) => state.auth);
 
     const [form, setForm] = useState({
         email: "",
@@ -19,6 +21,13 @@ export default function Login() {
         e.preventDefault();
         dispatch(loginUser(form));
     };
+
+    // Redirect to dashboard after successful login
+    useEffect(() => {
+        if (token) { // Assuming authSlice sets token on successful login
+            navigate("/dashboard"); // change to your dashboard route
+        }
+    }, [token, navigate]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-200">
@@ -76,9 +85,9 @@ export default function Login() {
 
                 <p className="text-center text-sm text-gray-600 mt-4">
                     Don’t have an account?
-                    <a href="/register" className="text-purple-600 font-medium ml-1">
+                    <Link to="/register" className="text-purple-600 font-medium ml-1">
                         Register
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>
