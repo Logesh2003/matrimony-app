@@ -41,7 +41,13 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password required" });
+        }
+
+        // 👇 IMPORTANT FIX HERE
+        const user = await User.findOne({ email }).select("+password");
+
         if (!user) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
@@ -57,12 +63,18 @@ exports.login = async (req, res) => {
             { expiresIn: "7d" }
         );
 
+        // 🚫 Never send password back
+        user.password = undefined;
+
         res.json({
             message: "Login successful",
             token,
-            user,
+            user
         });
+
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: error.message });
     }
 };
+
