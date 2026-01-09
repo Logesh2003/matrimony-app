@@ -9,6 +9,28 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const calculateProfileCompletion = (profile) => {
+        if (!profile) return 0; // ✅ very important
+
+        let completed = 0;
+        const total = 9;
+
+        if (profile.name) completed++;
+        if (profile.gender) completed++;
+        if (profile.dob) completed++;
+        if (profile.religion) completed++;
+        if (profile.caste) completed++;
+        if (profile.location) completed++;
+        if (profile.education) completed++;
+        if (profile.occupation) completed++;
+        if (profile.photos && profile.photos.length > 0) completed++;
+
+        return Math.round((completed / total) * 100);
+    };
+
+
+    const completion = calculateProfileCompletion(profile);
+
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -24,8 +46,8 @@ export default function Dashboard() {
 
     if (!profile) {
         return (
-            <div className="min-h-screen flex items-center justify-center text-gray-500">
-                Loading dashboard...
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-gray-500">Loading dashboard...</p>
             </div>
         );
     }
@@ -96,6 +118,31 @@ export default function Dashboard() {
                         <StatCard title="Matches" value={profile.matches?.length || 0} />
                         <StatCard title="Interests Sent" value={profile.interestsSent?.length || 0} />
                         <StatCard title="Interests Received" value={profile.interestsReceived?.length || 0} />
+                    </div>
+
+                    {/* Profile Completion */}
+                    <div className="bg-white rounded-2xl shadow p-5">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-sm font-semibold text-gray-700">
+                                Profile Completion
+                            </h3>
+                            <span className="text-sm font-bold text-purple-700">
+                                {completion}%
+                            </span>
+                        </div>
+
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                            <div
+                                className="bg-purple-600 h-3 rounded-full transition-all duration-500"
+                                style={{ width: `${completion}%` }}
+                            />
+                        </div>
+
+                        {completion < 100 && (
+                            <p className="mt-2 text-xs text-gray-500">
+                                Complete your profile to get better matches
+                            </p>
+                        )}
                     </div>
 
                     {/* Profile Details */}
